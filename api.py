@@ -49,7 +49,7 @@ class PRN:
         return uv_coords
 
     def dlib_detect(self, image):
-        return self.face_detector(image, 1)
+        return self.face_detector(image.astype(np.uint8), 1)
 
     def net_forward(self, image):
         ''' The core of out method: regress the position map of a given image.

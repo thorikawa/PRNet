@@ -10,6 +10,8 @@ import ast
 
 from api import PRN
 
+import sys
+sys.path.append('./utils/')
 from utils.estimate_pose import estimate_pose
 from utils.rotate_vertices import frontalize
 from utils.render_app import get_visibility, get_uv_mask, get_depth_image
