@@ -14,6 +14,19 @@ def write_asc(path, vertices):
     else:
         np.savetxt(path + '.asc', vertices)
 
+def send_nparray(array):
+    dstip = "127.0.0.1"
+    dstport = 6000
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+    length = array.shape[0]
+    data = bytearray(struct.pack('i', length))
+    for i in range(length):
+        data.extend(struct.pack('f', array[i, 0]));
+        data.extend(struct.pack('f', array[i, 1]));
+        data.extend(struct.pack('f', array[i, 2]));
+    sock.sendto(data, (dstip, dstport))
+
 def send_udp(obj_name, vertices, colors, triangles):
     dstip = "127.0.0.1"
     dstport = 6000

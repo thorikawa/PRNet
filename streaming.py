@@ -16,7 +16,7 @@ sys.path.append('./utils/')
 from utils.estimate_pose import estimate_pose
 from utils.rotate_vertices import frontalize
 from utils.render_app import get_visibility, get_uv_mask, get_depth_image
-from utils.write import write_obj, write_obj_with_texture, send_udp
+from utils.write import write_obj, write_obj_with_texture, send_udp, send_nparray
 from utils.cv_plot import plot_kpt, plot_vertices, plot_pose_box
 from imutils import build_montages
 
@@ -85,7 +85,7 @@ def main(args):
             else:
                 pass
                 #write_obj(os.path.join(save_folder, name + '.obj'), save_vertices, colors, prn.triangles) #save 3d face(can open with meshlab)
-                send_udp(os.path.join(save_folder, name + '.obj'), save_vertices, colors, prn.triangles)
+                #send_udp(os.path.join(save_folder, name + '.obj'), save_vertices, colors, prn.triangles)
 
         if args.isDepth:
             depth_image = get_depth_image(vertices, prn.triangles, h, w) 
@@ -95,7 +95,8 @@ def main(args):
             sio.savemat(os.path.join(save_folder, name + '_mesh.mat'), {'vertices': save_vertices, 'colors': colors, 'triangles': prn.triangles})
 
         kpt = prn.get_landmarks(pos)
-        #np.savetxt(os.path.join(save_folder, name + '_kpt.txt'), kpt) 
+        #np.savetxt(os.path.join(save_folder, name + '_kpt.txt'), kpt)
+        send_nparray(kpt)
         
         camera_matrix, pose = estimate_pose(vertices)
         #np.savetxt(os.path.join(save_folder, name + '_pose.txt'), pose) 
