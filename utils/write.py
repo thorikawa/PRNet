@@ -1,6 +1,8 @@
 import numpy as np
 from skimage.io import imsave
 import os
+import socket
+import struct
 
 def write_asc(path, vertices):
     '''
@@ -11,6 +13,35 @@ def write_asc(path, vertices):
         np.savetxt(path, vertices)
     else:
         np.savetxt(path + '.asc', vertices)
+
+def send_udp(obj_name, vertices, colors, triangles):
+    dstip = "127.0.0.1"
+    dstport = 6000
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    data = bytearray()
+
+    STEP = 1000
+    count = 0
+    startIndex = 0
+
+    for i in range(vertices.shape[0]):
+        # s = 'v {} {} {} \n'.format(vertices[0,i], vertices[1,i], vertices[2,i])
+        # s = 'v {} {} {} {} {} {}\n'.format(vertices[i, 0], vertices[i, 1], vertices[i, 2], colors[i, 0], colors[i, 1], colors[i, 2])
+        data.extend(struct.pack('f', vertices[i, 0]));
+        data.extend(struct.pack('f', vertices[i, 1]));
+        data.extend(struct.pack('f', vertices[i, 2]));
+        data.extend(struct.pack('f', colors[i, 0]));
+        data.extend(struct.pack('f', colors[i, 1]));
+        data.extend(struct.pack('f', colors[i, 2]));
+        count += 1
+        if count >= STEP or i == vertices.shape[0] - 1:
+            data = struct.pack('i', startIndex) + struct.pack('i', count) + data
+            sock.sendto(data, (dstip, dstport))
+            count = 0
+            startIndex = i + 1
+            data = bytearray()
+
 
 
 def write_obj(obj_name, vertices, colors, triangles):
