@@ -36,6 +36,7 @@ def main(args):
     while True:
         ret, image = cap.read()
         image = cv2.resize(image, (320, 240))
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         name = '%04d' % num
 
@@ -81,7 +82,7 @@ def main(args):
                     vertices_vis = get_visibility(vertices, prn.triangles, h, w)
                     uv_mask = get_uv_mask(vertices_vis, prn.triangles, prn.uv_coords, h, w, prn.resolution_op)
                     texture = texture*uv_mask[:,:,np.newaxis]
-                #write_obj_with_texture(os.path.join(save_folder, name + '.obj'), save_vertices, colors, prn.triangles, texture, prn.uv_coords/prn.resolution_op)#save 3d face with texture(can open with meshlab)
+                write_obj_with_texture(os.path.join(save_folder, name + '.obj'), save_vertices, colors, prn.triangles, texture, prn.uv_coords/prn.resolution_op)#save 3d face with texture(can open with meshlab)
             else:
                 pass
                 #write_obj(os.path.join(save_folder, name + '.obj'), save_vertices, colors, prn.triangles) #save 3d face(can open with meshlab)
