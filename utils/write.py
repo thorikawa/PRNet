@@ -101,13 +101,13 @@ def write_obj_with_texture(obj_name, vertices, colors, triangles, texture, uv_co
     if obj_name.split('.')[-1] != 'obj':
         obj_name = obj_name + '.obj'
     mtl_name = obj_name.replace('.obj', '.mtl')
-    texture_name = obj_name.replace('.obj', '_texture.png')
+    texture_name = obj_name.replace('.obj', '_texture.bmp')
     
     triangles = triangles.copy()
     triangles += 1 # mesh lab start with 1
     
     # write obj
-    with open(obj_name, 'wb') as f:
+    with open(obj_name, 'w') as f:
         # first line: write mtlib(material library)
         s = "mtllib {}\n".format(os.path.abspath(mtl_name))
         f.write(s)
@@ -130,7 +130,7 @@ def write_obj_with_texture(obj_name, vertices, colors, triangles, texture, uv_co
             f.write(s)
 
     # write mtl
-    with open(mtl_name, 'wb') as f:
+    with open(mtl_name, 'w') as f:
         f.write("newmtl FaceTexture\n")
         s = 'map_Kd {}\n'.format(os.path.abspath(texture_name)) # map to image
         f.write(s)
